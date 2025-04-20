@@ -1,0 +1,53 @@
+<div class="mb-3 d-flex justify-content-between align-items-center">
+  <input type="text" class="form-control w-25" placeholder="Search" />
+  <div>
+    <button
+      class="btn btn-primary me-2"
+      data-bs-toggle="modal"
+      data-bs-target="#addUserModal"
+    >
+      Add user +
+    </button>
+    <button class="btn btn-outline-secondary me-2">Sort by</button>
+    <button class="btn btn-outline-secondary">Saved search</button>
+  </div>
+</div>
+
+<table class="table table-bordered table-hover">
+  <thead class="table-light">
+    <tr>
+      <th>Name</th>
+      <th>Create Date</th>
+      <th>Role</th>
+      <th>Action</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let user of users">
+      <td>
+        <div class="fw-bold">{{ user.name }}</div>
+        <small class="text-muted">{{ user.email }}</small>
+      </td>
+      <td>{{ user.date }}</td>
+      <td>
+        <span
+          class="badge"
+          [ngClass]="{
+            'bg-primary': user.role === 'Super Admin',
+            'bg-info': user.role === 'Admin',
+            'bg-success': user.role === 'HR Admin',
+            'bg-secondary': user.role === 'Employee'
+          }"
+        >
+          {{ user.role }}
+        </span>
+      </td>
+      <td>
+        <button class="btn btn-sm btn-outline-danger me-2">✏️</button>
+        <button class="btn btn-sm btn-outline-secondary">🗑️</button>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<app-add-user-modal></app-add-user-modal>
