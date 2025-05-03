@@ -1,6 +1,6 @@
 ﻿namespace UserManagement.Models.DTO
 {
-    public class CreateUserRequestDto
+    public class CreateUserDto
     {
         public required string FirstName { get; set; }
 
@@ -14,5 +14,8 @@
 
         public required string Password { get; set; }
 
-    } 
+        public Guid RoleId {  get; set; }
+
+        public required List<CreateUserPermissionDto> Permissions { get; set; }
+    }
 }

@@ -1,8 +1,6 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Http.HttpResults;
-using Microsoft.AspNetCore.Mvc;
-using UserManagement.Models.Domain;
+﻿using Microsoft.AspNetCore.Mvc;
 using UserManagement.Models.DTO;
+using UserManagement.Models.DTO.Common;
 using UserManagement.Repositories.Interface;
 
 namespace UserManagement.Controllers
@@ -18,57 +16,62 @@ namespace UserManagement.Controllers
             this.userRepository = userRepository;
         }
 
-        //Add new User(POST)->api/users
+        //Add new User(POST)-> api/users
         [HttpPost]
-        public async Task<IActionResult> CreateUser(CreateUserRequestDto request)
+        public async Task<IActionResult> CreateUser(CreateUserDto param)
         {
-            var user = new User
-            {
-                FirstName = request.FirstName,
-                LastName = request.LastName,
-                Email = request.Email,
-                Phone = request.Phone,
-                Username = request.Username,
-                Password = request.Password,
-            };
+            var userDto = await userRepository.CreateUser(param);
 
-            await userRepository.CreateUserAsync(user);
-
-            return Ok();
+            return Ok(userDto);
         }
-        //Get User By Id(GET)->api/users/{id}
+
+        //Get Users(POST)-> api/users/DataTable
+        [HttpPost("DataTable")]
+        public async Task<IActionResult> GetUsers()
+        {
+            var users = await userRepository.GetUsers();
+
+            return Ok(users);
+        }
+
+
+        //Get User By Id(GET)-> api/users/{id}
         [HttpGet("{id}")]
         public async Task<IActionResult> GetUserById(Guid id)
         {
             var user = await userRepository.GetUserById(id);
-            if (user == null)
-            {
-                return BadRequest(); // 400 if user not found
-            }
+            if (user == null) return BadRequest(); // 400 if user not found
             return Ok(user);
         }
 
+        //Delete User(DELETE)-> api/users/{id}
         [HttpDelete("{id}")]
-
         public async Task<IActionResult> DeleteUser(Guid id)
         {
-            var user = await userRepository.DeleteUser(id);
-            if (user == null)
+            var status = await userRepository.DeleteUser(id);
+            if (status == false)
+                return BadRequest(new DeleteUserResponse
+                {
+                    Result = false,
+                    Message = "User not found"
+                });
+            return Ok(new DeleteUserResponse
             {
-                return BadRequest(); // 400 if user not found
-            }
-            return Ok(user);
+                Result = true,
+                Message = "User has been deleted"
+            });
         }
 
+        //Edit User(PUT)-> api/users/{id}
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateUser(Guid id, CreateUserRequestDto editedUser)
+        public async Task<IActionResult> UpdateUser(Guid id, CreateUserDto editedUser)
         {
-            var user = await userRepository.UpdateUser(id, editedUser);
-            if (user == null)
+            var userDto = await userRepository.UpdateUser(id, editedUser);
+            if (userDto == null)
             {
                 return BadRequest();
             }
-            return Ok(user);
+            return Ok(userDto);
 
         }
 

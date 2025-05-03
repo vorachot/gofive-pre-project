@@ -12,21 +12,10 @@
 
         public string? Phone { get; set; }
 
-        //public required string RoleId { get; set; }
+        public required RoleDto Role { get; set; }
 
         public required string Username { get; set; }
 
-        public required string Password { get; set; }
-
-        /*public required string PermissionId { get; set; }
-
-        public required bool IsReadable { get; set; }
-
-        public required bool IsWritable { get; set; }
-
-        public required bool IsDeletable { get; set; }*/
-
-        public DateOnly CreatedDate { get; set; }
-
+        public required List<UserPermissionDto> Permissions { get; set; }
     }
 }
