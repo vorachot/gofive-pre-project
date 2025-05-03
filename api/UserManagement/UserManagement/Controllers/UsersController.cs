@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using UserManagement.Models.Domain;
 using UserManagement.Models.DTO;
@@ -17,6 +18,7 @@ namespace UserManagement.Controllers
             this.userRepository = userRepository;
         }
 
+        //Add new User(POST)->api/users
         [HttpPost]
         public async Task<IActionResult> CreateUser(CreateUserRequestDto request)
         {
@@ -34,13 +36,41 @@ namespace UserManagement.Controllers
 
             return Ok();
         }
-
-        /*[HttpGet]
-        public Task<IActionResult> GetUserById(string id)
+        //Get User By Id(GET)->api/users/{id}
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetUserById(Guid id)
         {
-            User user = Sql
-            return user
-        }*/
-        
+            var user = await userRepository.GetUserById(id);
+            if (user == null)
+            {
+                return BadRequest(); // 400 if user not found
+            }
+            return Ok(user);
+        }
+
+        [HttpDelete("{id}")]
+
+        public async Task<IActionResult> DeleteUser(Guid id)
+        {
+            var user = await userRepository.DeleteUser(id);
+            if (user == null)
+            {
+                return BadRequest(); // 400 if user not found
+            }
+            return Ok(user);
+        }
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateUser(Guid id, CreateUserRequestDto editedUser)
+        {
+            var user = await userRepository.UpdateUser(id, editedUser);
+            if (user == null)
+            {
+                return BadRequest();
+            }
+            return Ok(user);
+
+        }
+
     }
 }
