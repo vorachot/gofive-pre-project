@@ -1,7 +1,7 @@
-import { Component, OnDestroy } from '@angular/core';
+import { Component, EventEmitter, OnDestroy, Output } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { Subscription } from 'rxjs';
-import { CreateUserRequest } from 'src/app/models/create-user-request';
+import { CreateUserDto } from 'src/app/models/create-user-dto';
 import { UserService } from 'src/app/services/user.service';
 
 @Component({
@@ -10,45 +10,58 @@ import { UserService } from 'src/app/services/user.service';
   styleUrls: ['./add-user-modal.component.css'],
 })
 export class AddUserModalComponent implements OnDestroy {
-  model: CreateUserRequest;
+  model: CreateUserDto;
   private createUserSubscription?: Subscription;
 
   constructor(private userService: UserService) {
-    this.model = {
-      firstName: '',
-      lastName: '',
-      email: '',
-      phone: '',
-      username: '',
-      password: '',
-    };
+    this.model = this.createUser;
   }
+  createUser: CreateUserDto = {
+    firstName: '',
+    lastName: '',
+    email: '',
+    phone: '',
+    username: '',
+    password: '',
+    roleId: 'F50A827C-8691-4968-82DC-FAECF38E331B', //Developer
+    permissions: [
+      {
+        permissionId: 'E1813DFF-10CA-43F7-AFD7-658102110F54', //Employee
+        isReadable: true,
+        isWritable: false,
+        isDeletable: false,
+      },
+    ],
+  };
+  confirmPassword: string = '';
+  @Output() userCreated = new EventEmitter<void>();
   onSubmit(form: NgForm) {
+    if (form.invalid) {
+      return;
+    }
+    if (this.model.password !== this.confirmPassword) {
+      alert('Passwords do not match!');
+      return;
+    }
     this.createUserSubscription = this.userService
       .createUser(this.model)
       .subscribe({
         next: (response) => {
           console.log('User created successfully:', response);
-          form.reset();
-          this.model = {
-            firstName: '',
-            lastName: '',
-            email: '',
-            phone: '',
-            username: '',
-            password: '',
-          };
+          this.resetForm(form);
+          this.userCreated.emit();
         },
         error: (error) => {
           console.error('Error creating user:', error);
         },
-        complete: () => {
-          console.log('User creation request completed');
-        },
       });
   }
+  resetForm(form: NgForm) {
+    form.reset();
+    this.model = this.createUser;
+  }
 
-  roles = [
+  permissions = [
     { name: 'Super Admin', read: true, write: true, delete: true },
     { name: 'Admin', read: true, write: false, delete: false },
     { name: 'Employee', read: true, write: false, delete: false },

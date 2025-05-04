@@ -55,10 +55,10 @@ namespace UserManagement.Repositories.Implementation
             return dbUser.ToDto();
 
         }
-        public async Task<List<User>> GetUsers()
+        public async Task<List<UserDto>> GetUsers()
         {
-
-            return await dbContext.Users.ToListAsync();
+            var users = await dbContext.Users.Include(u => u.Role).Include(u => u.UserPermissions).ThenInclude(up => up.Permission).ToListAsync();
+            return users.Select(user => user.ToDto()).ToList();
         }
         public async Task<UserDto?> UpdateUser(Guid id, CreateUserDto param)
         {

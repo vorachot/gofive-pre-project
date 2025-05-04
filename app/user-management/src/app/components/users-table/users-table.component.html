@@ -25,21 +25,20 @@
   <tbody>
     <tr *ngFor="let user of users">
       <td>
-        <div class="fw-bold">{{ user.name }}</div>
+        <div class="fw-bold">{{ user.firstName + " " + user.lastName }}</div>
         <small class="text-muted">{{ user.email }}</small>
       </td>
-      <td>{{ user.date }}</td>
+      <td>20/02/2025</td>
       <td>
         <span
           class="badge"
           [ngClass]="{
-            'bg-primary': user.role === 'Super Admin',
-            'bg-info': user.role === 'Admin',
-            'bg-success': user.role === 'HR Admin',
-            'bg-secondary': user.role === 'Employee'
+            'bg-info': user.role.roleName === 'CEO',
+            'bg-primary': user.role.roleName === 'Developer',
+            'bg-warning': user.role.roleName === 'HR',
           }"
         >
-          {{ user.role }}
+          {{ user.role.roleName }}
         </span>
       </td>
       <td>
@@ -50,4 +49,4 @@
   </tbody>
 </table>
 
-<app-add-user-modal></app-add-user-modal>
+<app-add-user-modal (userCreated)="fetchUsers()"></app-add-user-modal>

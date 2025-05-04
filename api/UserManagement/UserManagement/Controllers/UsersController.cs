@@ -30,14 +30,14 @@ namespace UserManagement.Controllers
         /// <summary>
         /// Get Users.
         /// </summary>
-        [HttpPost("DataTable")]
+        //[HttpPost("DataTable")]
+        [HttpGet("DataTable")]
         public async Task<IActionResult> GetUsers()
         {
             var users = await userRepository.GetUsers();
 
             return Ok(users);
         }
-
 
         /// <summary>
         /// Get User By Id.

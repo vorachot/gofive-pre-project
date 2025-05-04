@@ -6,7 +6,7 @@ namespace UserManagement.Repositories.Interface
     {
         Task<UserDto?> CreateUser(CreateUserDto param);
         Task<UserDto?> GetUserById(Guid id);
-        Task<List<User>> GetUsers();
+        Task<List<UserDto?>> GetUsers();
         Task<UserDto?> UpdateUser(Guid id, CreateUserDto user);
         Task<Boolean> DeleteUser(Guid id);
     }
