@@ -14,6 +14,9 @@ namespace UserManagement.Controllers
             this.roleRepository = roleRepository;
         }
 
+        /// <summary>
+        /// Get all Roles.
+        /// </summary>
         [HttpGet]
         public async Task<IActionResult> GetRoles() 
         {

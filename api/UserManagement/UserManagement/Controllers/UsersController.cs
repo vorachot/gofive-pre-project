@@ -16,7 +16,9 @@ namespace UserManagement.Controllers
             this.userRepository = userRepository;
         }
 
-        //Add new User(POST)-> api/users
+        /// <summary>
+        /// Add new User.
+        /// </summary>
         [HttpPost]
         public async Task<IActionResult> CreateUser(CreateUserDto param)
         {
@@ -25,7 +27,9 @@ namespace UserManagement.Controllers
             return Ok(userDto);
         }
 
-        //Get Users(POST)-> api/users/DataTable
+        /// <summary>
+        /// Get Users.
+        /// </summary>
         [HttpPost("DataTable")]
         public async Task<IActionResult> GetUsers()
         {
@@ -35,7 +39,9 @@ namespace UserManagement.Controllers
         }
 
 
-        //Get User By Id(GET)-> api/users/{id}
+        /// <summary>
+        /// Get User By Id.
+        /// </summary>
         [HttpGet("{id}")]
         public async Task<IActionResult> GetUserById(Guid id)
         {
@@ -44,7 +50,9 @@ namespace UserManagement.Controllers
             return Ok(user);
         }
 
-        //Delete User(DELETE)-> api/users/{id}
+        /// <summary>
+        /// Delete User.
+        /// </summary>
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteUser(Guid id)
         {
@@ -62,7 +70,9 @@ namespace UserManagement.Controllers
             });
         }
 
-        //Edit User(PUT)-> api/users/{id}
+        /// <summary>
+        /// Edit User.
+        /// </summary>
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateUser(Guid id, CreateUserDto editedUser)
         {
