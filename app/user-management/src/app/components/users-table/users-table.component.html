@@ -48,7 +48,12 @@
         >
           ✏️
         </button>
-        <button class="btn btn-sm btn-outline-secondary">🗑️</button>
+        <button
+          class="btn btn-sm btn-outline-secondary"
+          (click)="onDeleteUser(user.id)"
+        >
+          🗑️
+        </button>
       </td>
     </tr>
   </tbody>

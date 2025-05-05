@@ -74,4 +74,18 @@ export class UsersTableComponent {
       },
     });
   }
+  onDeleteUser(userId: string) {
+    if (confirm('Are you sure you want to delete this user?')) {
+      this.userService.deleteUser(userId).subscribe({
+        next: (response) => {
+          console.log(response);
+          this.fetchUsers(); // Refresh table
+        },
+        error: (err) => {
+          console.error('Error deleting user:', err);
+          alert('Failed to delete user');
+        },
+      });
+    }
+  }
 }
