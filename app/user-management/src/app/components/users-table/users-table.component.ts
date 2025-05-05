@@ -3,7 +3,7 @@ import { RoleDto, UserDto, UserPermissionDto } from 'src/app/models/user-dto';
 import { UserService } from 'src/app/services/user.service';
 import { RoleService } from 'src/app/services/role.service';
 import { PermissionService } from 'src/app/services/permission.service';
-
+declare var bootstrap: any;
 @Component({
   selector: 'app-users-table',
   templateUrl: './users-table.component.html',
@@ -13,6 +13,7 @@ export class UsersTableComponent {
   users: UserDto[] | undefined;
   roles: RoleDto[] | undefined;
   permissions: UserPermissionDto[] | undefined;
+  selectedUserToEdit?: UserDto;
   constructor(
     private userService: UserService,
     private roleService: RoleService,
@@ -55,6 +56,21 @@ export class UsersTableComponent {
       },
       error: (err) => {
         console.error('Error fetching permissions:', err);
+      },
+    });
+  }
+
+  onEditUser(userId: string) {
+    this.userService.getUserById(userId).subscribe({
+      next: (user: UserDto) => {
+        this.selectedUserToEdit = user;
+        console.log('Selected user for edit:', this.selectedUserToEdit);
+        const modalElement = document.getElementById('addUserModal');
+        const modal = new bootstrap.Modal(modalElement!);
+        modal.show();
+      },
+      error: (err) => {
+        console.error('Failed to fetch user:', err);
       },
     });
   }
