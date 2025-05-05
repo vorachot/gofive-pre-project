@@ -49,4 +49,8 @@
   </tbody>
 </table>
 
-<app-add-user-modal (userCreated)="fetchUsers()"></app-add-user-modal>
+<app-add-user-modal
+  (userCreated)="fetchUsers()"
+  [roles]="roles ?? []"
+  [permissions]="permissions ?? []"
+></app-add-user-modal>

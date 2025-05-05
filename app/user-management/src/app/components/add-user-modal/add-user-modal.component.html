@@ -20,6 +20,7 @@
 
       <div class="modal-body">
         <form #form="ngForm" (ngSubmit)="onSubmit(form)">
+          <!--firstname, lastname  -->
           <div class="row mb-3">
             <div class="col">
               <input
@@ -42,7 +43,7 @@
               />
             </div>
           </div>
-
+          <!--email, phone, role  -->
           <div class="row mb-3">
             <div class="col">
               <input
@@ -64,14 +65,20 @@
               />
             </div>
             <div class="col">
-              <select class="form-select">
-                <option selected>Select Role Type</option>
-                <option>Admin</option>
-                <option>Employee</option>
+              <select
+                class="form-select"
+                [(ngModel)]="model.roleId"
+                name="roleId"
+                required
+              >
+                <option value="" disabled>Select Role Type</option>
+                <option *ngFor="let role of roles" [value]="role.roleId">
+                  {{ role.roleName }}
+                </option>
               </select>
             </div>
           </div>
-
+          <!--username, password, confirmpassword  -->
           <div class="row mb-4">
             <div class="col">
               <input
@@ -104,6 +111,7 @@
               />
             </div>
           </div>
+          <!--permissions  -->
           <table class="table table-bordered">
             <thead class="table-light">
               <tr>
@@ -114,32 +122,33 @@
               </tr>
             </thead>
             <tbody>
-              <tr *ngFor="let permission of permissions">
-                <td>{{ permission.name }}</td>
+              <tr *ngFor="let permission of permissions; let i = index">
+                <td>{{ permission.permissionName }}</td>
                 <td>
                   <input
                     type="checkbox"
-                    [checked]="permission.read"
-                    name="read"
+                    [(ngModel)]="model.permissions[i].isReadable"
+                    name="read-{{ i }}"
                   />
                 </td>
                 <td>
                   <input
                     type="checkbox"
-                    [checked]="permission.write"
-                    name="write"
+                    [(ngModel)]="model.permissions[i].isWritable"
+                    name="write-{{ i }}"
                   />
                 </td>
                 <td>
                   <input
                     type="checkbox"
-                    [checked]="permission.delete"
-                    name="delete"
+                    [(ngModel)]="model.permissions[i].isDeletable"
+                    name="delete-{{ i }}"
                   />
                 </td>
               </tr>
             </tbody>
           </table>
+
           <div class="modal-footer">
             <button
               type="button"

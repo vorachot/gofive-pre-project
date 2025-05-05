@@ -1,7 +1,14 @@
-import { Component, EventEmitter, OnDestroy, Output } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  OnDestroy,
+  Output,
+} from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { CreateUserDto } from 'src/app/models/create-user-dto';
+import { RoleDto, UserPermissionDto } from 'src/app/models/user-dto';
 import { UserService } from 'src/app/services/user.service';
 
 @Component({
@@ -10,11 +17,31 @@ import { UserService } from 'src/app/services/user.service';
   styleUrls: ['./add-user-modal.component.css'],
 })
 export class AddUserModalComponent implements OnDestroy {
+  @Input() permissions: UserPermissionDto[] = [];
+  @Input() roles: RoleDto[] = [];
+  @Output() userCreated = new EventEmitter<void>();
   model: CreateUserDto;
   private createUserSubscription?: Subscription;
 
   constructor(private userService: UserService) {
     this.model = this.createUser;
+  }
+  private getEmptyUser(): CreateUserDto {
+    return {
+      firstName: '',
+      lastName: '',
+      email: '',
+      phone: '',
+      username: '',
+      password: '',
+      roleId: '',
+      permissions: this.permissions.map((p) => ({
+        permissionId: p.permissionId,
+        isReadable: false,
+        isWritable: false,
+        isDeletable: false,
+      })),
+    };
   }
   createUser: CreateUserDto = {
     firstName: '',
@@ -23,18 +50,11 @@ export class AddUserModalComponent implements OnDestroy {
     phone: '',
     username: '',
     password: '',
-    roleId: 'F50A827C-8691-4968-82DC-FAECF38E331B', //Developer
-    permissions: [
-      {
-        permissionId: 'E1813DFF-10CA-43F7-AFD7-658102110F54', //Employee
-        isReadable: true,
-        isWritable: false,
-        isDeletable: false,
-      },
-    ],
+    roleId: '',
+    permissions: [],
   };
   confirmPassword: string = '';
-  @Output() userCreated = new EventEmitter<void>();
+
   onSubmit(form: NgForm) {
     if (form.invalid) {
       return;
@@ -43,6 +63,7 @@ export class AddUserModalComponent implements OnDestroy {
       alert('Passwords do not match!');
       return;
     }
+    console.log(this.model);
     this.createUserSubscription = this.userService
       .createUser(this.model)
       .subscribe({
@@ -58,15 +79,16 @@ export class AddUserModalComponent implements OnDestroy {
   }
   resetForm(form: NgForm) {
     form.reset();
-    this.model = this.createUser;
+    this.model = this.getEmptyUser();
   }
-
-  permissions = [
-    { name: 'Super Admin', read: true, write: true, delete: true },
-    { name: 'Admin', read: true, write: false, delete: false },
-    { name: 'Employee', read: true, write: false, delete: false },
-  ];
-
+  ngOnChanges() {
+    this.model.permissions = this.permissions.map((p) => ({
+      permissionId: p.permissionId,
+      isReadable: false,
+      isWritable: false,
+      isDeletable: false,
+    }));
+  }
   ngOnDestroy(): void {
     this.createUserSubscription?.unsubscribe();
   }
